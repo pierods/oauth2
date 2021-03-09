@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vw-oauth-clusterip-svc
+  labels:
+    app: vw-oauth-clusterip
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: vw-oauth-clusterip
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vw-oauth-clusterip-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vw-oauth-clusterip
+  template:
+    metadata:
+      labels:
+        app: vw-oauth-clusterip
+    spec:
+      containers:
+        - name: vw-oauth-clusterip-pod
+          image: vw-oauth:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /k8s
+              port: 8080
+            initialDelaySeconds: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /k8s
+              port: 8000
+            initialDelaySeconds: 1
+            timeoutSeconds: 1
