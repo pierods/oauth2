@@ -39,6 +39,6 @@ spec:
           livenessProbe:
             httpGet:
               path: /k8s
-              port: 8000
+              port: 8080
             initialDelaySeconds: 1
             timeoutSeconds: 1
